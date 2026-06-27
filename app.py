@@ -10,6 +10,7 @@ app = Flask(__name__, static_folder=".")
 CORS(app)
 
 API_KEY = "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"
+
 client = Groq(api_key=API_KEY)
 
 SYSTEM_PROMPT = """You are PyBot, a smart and friendly AI assistant.
@@ -38,9 +39,6 @@ def chat_stream():
 
         if not user_message:
             return jsonify({"error": "Message empty hai"}), 400
-
-        if API_KEY == "APNI-GROQ-KEY-YAHAN-DAALO":
-            return jsonify({"error": "API key set nahi ki! app.py mein API_KEY update karo."}), 401
 
         history = get_session(sid)
         history.append({"role": "user", "content": user_message})
@@ -96,13 +94,5 @@ def export_session():
                     headers={"Content-Disposition": "attachment; filename=pybot-chat.txt"})
 
 if __name__ == "__main__":
-    print("=" * 45)
-    print("  ✨ PyBot AI Server (Groq)")
-    print("=" * 45)
-    if API_KEY == "APNI-GROQ-KEY-YAHAN-DAALO":
-        print("  ⚠️  WARNING: API key set nahi ki!")
-    else:
-        print("  ✅ Groq API key detected")
-    print("  🌐 Open: http://localhost:5000")
-    print("=" * 45)
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
